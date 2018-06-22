@@ -24,14 +24,16 @@ class Plan_conversions extends CI_Controller {
 		$fdate= strtoupper($this->input->post('fdate'));
 		$tdate= strtoupper($this->input->post('tdate'));
 		$this->load->model('Plan_conversions_model', 'pc');
-		$planconversions = $this->pc->get_planconversions($fdate, $tdate);
+		$lower_planconversions = $this->pc->get_planconversions($fdate, $tdate, 'l2h');
+		$higher_planconversions = $this->pc->get_planconversions($fdate, $tdate, 'h2l');
 	
 		$data = array(
 				'title' => 'SDE Wise Popular Plans Conversions from ' .$fdate. ' to ' .$tdate,
 				'content' => 'Plan_conversions/summary',
 				'fdate' => $fdate,
 				'tdate' => $tdate,
-				'planconversions' => $planconversions,
+				'lower_planconversions' => $lower_planconversions,
+				'higher_planconversions' => $higher_planconversions,
 				'scripts' => array('Plan_conversions'),
 		);
 	
@@ -39,15 +41,18 @@ class Plan_conversions extends CI_Controller {
 	
 	}
 	
-	public function lower_to_higher_sum($sde, $fdate, $tdate) // To get Lower-> Higher Plans Summary under a particular SDE 
+	public function conv_sum_sde($sde, $fdate, $tdate, $conv_type) // To get Lower-> Higher Plans Summary under a particular SDE 
 	{
+		
+		$title= (($conv_type == 'l2h') ? "LOWER_PLAN TO HIGHER_PLAN" : "HIGHER_PLAN TO LOWER_PLAN");
 		$this->load->model('Plan_conversions_model', 'pc');
-		$lower_to_higher_sum = $this->pc->get_lower_to_higher_sum($sde, $fdate, $tdate);
+		$conv_sum_sde = $this->pc->get_conv_sum_sde($sde, $fdate, $tdate, $conv_type);
 	
 		$data = array(
-				'title' => 'Lower Plan to Higher Plan Conversions Summary under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
-				'content' => 'Plan_conversions/lower_to_higher_sum',
-				'lower_to_higher_sum' => $lower_to_higher_sum,
+				'title' => $title .' Conversions Summary under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
+				'content' => 'Plan_conversions/conv_sum_sde',
+				'conv_sum_sde' => $conv_sum_sde,
+				'conv_type' => $conv_type,
 				'scripts' => array('Plan_conversions'),
 		);
 	
@@ -55,15 +60,17 @@ class Plan_conversions extends CI_Controller {
 	
 	}
 	
-	public function lower_to_higher($sde, $fdate, $tdate)
+	public function conv_det($sde, $fdate, $tdate, $conv_type)
 	{
 		$this->load->model('Plan_conversions_model', 'pc');
-		$lower_to_higher_det = $this->pc->get_lower_to_higher($sde, $fdate, $tdate);
-	
+		$conv_det = $this->pc->get_conv_det($sde, $fdate, $tdate, $conv_type);
+		$title= (($conv_type == 'l2h') ? "LOWER_PLAN TO HIGHER_PLAN" : "HIGHER_PLAN TO LOWER_PLAN");
+		
 		$data = array(
-				'title' => 'Lower Plan to Higher Plan Conversions under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
-				'content' => 'Plan_conversions/lower_to_higher_det',
-				'lower_to_higher_det' => $lower_to_higher_det,
+				'title' => $title .' Conversions under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
+				'content' => 'Plan_conversions/conv_det',
+				'conv_det' => $conv_det,
+				'conv_type' => $conv_type,
 				'scripts' => array('Plan_conversions'),
 		);
 	
