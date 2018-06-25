@@ -19,62 +19,63 @@ class Popular_Provisions extends CI_Controller {
 	
 		$this->load->view('layout_new',$data);
 	}
-	public function summary() // To get Summary of Higher-> Lower &  Lower-> Higher Plan conversions
+	public function summary() // To get Summary of SDE Wise Provisions under Popular plans
 	{
 		$fdate= strtoupper($this->input->post('fdate'));
 		$tdate= strtoupper($this->input->post('tdate'));
 		$this->load->model('Popular_Provisions_model', 'ppp');
-		$lower_planconversions = $this->pc->get_Popular_Provisions($fdate, $tdate);
-		$higher_planconversions = $this->pc->get_Popular_Provisions($fdate, $tdate);
+		$popular_provisions = $this->ppp->get_Popular_Provisions($fdate, $tdate);
+		$get_groupby_plan = $this->ppp->get_groupby_plan($fdate, $tdate);
 	
 		$data = array(
-				'title' => 'SDE Wise Popular Plans Provisions from ' .$fdate. ' to ' .$tdate,
-				'content' => 'Plan_conversions/summary',
+				'title' => 'Popular Plans Provisions summary from ' .$fdate. ' to ' .$tdate,
 				'fdate' => $fdate,
 				'tdate' => $tdate,
-				'scripts' => array('Plan_conversions'),
+				'content' => 'Popular_Provisions/summary',
+				'popular_provisions' => $popular_provisions,
+				'get_groupby_plan' => $get_groupby_plan,
+				'scripts' => array('Popular_Provisions'),
 		);
 	
 		$this->load->view('layout_new',$data);
 	
 	}
 	
-	public function conv_sum_sde($sde, $fdate, $tdate, $conv_type) // To get Lower-> Higher Plans Summary under a particular SDE 
+	public function plan_sum_sde($sde, $fdate, $tdate) // To get Summary of Plan wise Provisions under each SDE 
 	{
-		
-		$title= (($conv_type == 'l2h') ? "LOWER_PLAN TO HIGHER_PLAN" : "HIGHER_PLAN TO LOWER_PLAN");
-		$this->load->model('Plan_conversions_model', 'pc');
-		$conv_sum_sde = $this->pc->get_conv_sum_sde($sde, $fdate, $tdate, $conv_type);
+		$this->load->model('Popular_Provisions_model', 'ppp');
+		$plan_sum_sde = $this->ppp->get_plan_sum_sde($sde,$fdate, $tdate);
 	
 		$data = array(
-				'title' => $title .' Conversions Summary under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
-				'content' => 'Plan_conversions/conv_sum_sde',
-				'conv_sum_sde' => $conv_sum_sde,
-				'conv_type' => $conv_type,
-				'scripts' => array('Plan_conversions'),
+				'title' => 'Popular Plans Provisions from ' .$fdate. ' to ' .$tdate. ' under '. $sde,
+				'fdate' => $fdate,
+				'tdate' => $tdate,
+				'content' => 'Popular_Provisions/plan_sum_sde',
+				'plan_sum_sde' => $plan_sum_sde,
+				'scripts' => array('Popular_Provisions'),
 		);
 	
 		$this->load->view('layout_new',$data);
 	
 	}
 	
-	public function conv_det($sde, $fdate, $tdate, $conv_type)
+	public function plan_det($sde, $fdate, $tdate) // To get Details of Plan wise Provisions under each SDE 
 	{
-		$this->load->model('Plan_conversions_model', 'pc');
-		$conv_det = $this->pc->get_conv_det($sde, $fdate, $tdate, $conv_type);
-		$title= (($conv_type == 'l2h') ? "LOWER_PLAN TO HIGHER_PLAN" : "HIGHER_PLAN TO LOWER_PLAN");
+		$this->load->model('Popular_Provisions_model', 'ppp');
+		$prov_det = $this->ppp->get_plan_det($sde, $fdate, $tdate);
 		
 		$data = array(
-				'title' => $title .' Conversions under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
-				'content' => 'Plan_conversions/conv_det',
-				'conv_det' => $conv_det,
-				'conv_type' => $conv_type,
-				'scripts' => array('Plan_conversions'),
+				'title' => 'Popular Plans Provisions under ' .$sde. ' from  '.$fdate.' to  '.$tdate.'',
+				'content' => 'Popular_Provisions/prov_det',
+				'prov_det' => $prov_det,
+				'scripts' => array('Popular_Provisions'),
 		);
 	
 		$this->load->view('layout_new',$data);
 	
 	}
+	
+	
 }
 
 

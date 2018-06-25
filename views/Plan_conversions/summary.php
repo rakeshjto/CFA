@@ -13,10 +13,12 @@
 				</thead>
 				<tbody>
 				  <?php
+					$total=0;
 					$conv_type= "l2h";
 					 $sn=1;
 					 foreach($lower_planconversions as $data)
 						{
+							$total = $total+ $data['CNT'];
 							echo "<tr>";
 							echo "<td>" . $sn. "</td>";
 							echo "<td><a href='" .base_url(). "Plan_conversions/conv_sum_sde/" .$data['SDE']. "/" .$fdate. "/" .$tdate. "/" .$conv_type. "' target='_blank'>" . $data['SDE']. "</td>";
@@ -26,6 +28,14 @@
 						}
 				  ?>
 				</tbody>
+				
+				<tfoot>
+				  <tr>
+					<th colspan="2">Total</th>
+					<?php echo "<th>" .$total. "</th>";?>
+				  </tr>
+				</tfoot>
+				
 			</table>
 	  </div>
       <div class="col-sm">
@@ -40,10 +50,12 @@
 				</thead>
 				<tbody>
 				  <?php
+					$total=0;
 					$conv_type= "h2l";	
 					$sn=1;
 					 foreach($higher_planconversions as $data)
 						{
+							$total = $total+ $data['CNT'];
 							echo "<tr>";
 							echo "<td>" . $sn. "</td>";
 							echo "<td><a href='" .base_url(). "Plan_conversions/conv_sum_sde/" .$data['SDE']. "/" .$fdate. "/" .$tdate. "/" .$conv_type. "' target='_blank'>" . $data['SDE']. "</td>";
@@ -53,12 +65,18 @@
 						}
 				  ?>
 				</tbody>
+				<tfoot>
+				  <tr>
+					<th colspan="2">Total</th>
+					<?php echo "<th>" .$total. "</th>";?>
+				  </tr>
+				</tfoot>
 			</table>
 	  </div>
     </div>
 </div> 
 
-<!-- Implement Totals in Table-->
+
 
 
 
