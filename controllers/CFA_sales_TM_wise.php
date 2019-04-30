@@ -160,14 +160,15 @@ class CFA_sales_TM_wise extends CI_Controller {
 			$text = "LL Provision Order";
 		} else if ($prov_type == "bbphoneno") {
 			$text = "BB Provision Order";
-		} else if ($prov_type == "llbbphoneno") {
-			$text = "FollowOn BB Provision Order";
+		} else if ($prov_type == "ftthphoneno") {
+			$text = "FTTH Provision Order";
 		}
 		// echo $phone_no . "|" .$prov_type . "<br>";
 		$result = $this->btj->get_orders ( $phone_no, $prov_type );
 		
 		if (isset ( $result )) {
 			$result_data = explode ( "|", $result );
+			
 			if ($result_data [0] == 'D') {
 				$response = array (
 						'status' => 'danger',
@@ -182,7 +183,20 @@ class CFA_sales_TM_wise extends CI_Controller {
 			else if ($result_data [0] == 'S') {
 				$response = array (
 						'status' => 'success',
-						'message' => $result_data [1] 
+						'PHONE_NO' => $phone_no,
+						'PROV_TYPE' => $prov_type,
+						'ORDER_NO' => $result_data [1],
+						'ORDER_COMP_DATE' => $result_data [2],
+						'ORDER_TYPE' => $result_data [3],
+						'ORDER_SUB_TYPE' => $result_data [4],
+						'SERVICE_SUB_TYPE' => $result_data [5],
+						'EXCHANGE_CODE' => $result_data [6],
+						'NAME' => $result_data [7],
+						'ROW_ID' => $result_data [8],
+						'PART_NUM' => $result_data [9],
+						'MON_RENT' => $result_data [10]
+						
+						
 				);
 			}
 		} else {
@@ -213,9 +227,21 @@ class CFA_sales_TM_wise extends CI_Controller {
 		$this->load->model('CFA_sales_TM_wise_model', 'btj');
 		$this->db->trans_start();
 		
-		$order_no= $this->input->post('order_no');
+		$order_no= $this->input->post('ORDER_NO');
 		$tm_id= $this->input->post('tm_id');
-		$result = $this->btj->insert_data($order_no,$tm_id);
+		$order_comp_date= $this->input->post('ORDER_COMP_DATE');
+		$order_type= $this->input->post('ORDER_TYPE');
+		$order_sub_type= $this->input->post('ORDER_SUB_TYPE');
+		$service_sub_type= $this->input->post('SERVICE_SUB_TYPE');
+		$exchange_code= $this->input->post('EXCHANGE_CODE');
+		$name= $this->input->post('NAME');
+		$row_id= $this->input->post('ROW_ID');
+		$part_num= $this->input->post('PART_NUM');
+		$mon_rent= $this->input->post('MON_RENT');
+		$phone_no= $this->input->post('PHONE_NO');
+		$prov_type= $this->input->post('PROV_TYPE');
+		
+		$result = $this->btj->insert_data($order_no,$tm_id,$order_comp_date,$order_type,$order_sub_type,$service_sub_type,$exchange_code,$name,$row_id,$part_num,$mon_rent,$phone_no,$prov_type);
 		
 		$this->db->trans_complete();
 		if ($this->db->trans_status() === FALSE)
@@ -274,7 +300,7 @@ class CFA_sales_TM_wise extends CI_Controller {
 		$this->load->view('layout',$data);
 		
 	}*/
-	
+	/* NOW WORKING
 	public function Get_reports()
 	{
 		if(!$this->check_login()){
@@ -297,19 +323,20 @@ class CFA_sales_TM_wise extends CI_Controller {
 		$this->load->view('layout',$data);
 	
 	}
-	
+	*/
 	public function prov_details($designation,$hr_no,$prov_type,$monyy)
 	{
 		//$this->output->enable_profiler(TRUE);
 		$this->load->model('CFA_sales_TM_wise_model', 'btj');
 		$result = $this->btj->prov_details($designation,$hr_no,$prov_type,$monyy);
-	
+	    $prov=str_replace("PROV"," ",$prov_type);
 		$data = array(
 				'title' => 'BEST TM & BEST JTO',
 				'content' => 'CFA_sales_TM_wise/prov_details',
 				'scripts' => array('CFA_sales_TM_wise'),
 				'monyy' => $monyy,
-				'result' => $result
+				'result' => $result,
+				'heading' => $prov.'Provisions Details of '.$hr_no.'  for the month of '.$monyy
 		);
 	
 		$this->load->view('layout',$data);
